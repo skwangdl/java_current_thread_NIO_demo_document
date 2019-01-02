@@ -1,4 +1,4 @@
-package com.kepler.thread1;
+package com.kepler.thread;
 
 public class SynchronizedDemo implements Runnable {
     private static int count = 0;

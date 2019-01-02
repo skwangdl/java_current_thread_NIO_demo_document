@@ -1,9 +1,9 @@
-package com.kepler.thread1;
+package com.kepler.thread;
 
-public class SynchronizedDemo1 {
+public class SynchronizedDemo_issync {
 
     public static void main(String[] args){
-        SynchronizedDemo1 demo = new SynchronizedDemo1();
+        SynchronizedDemo_issync demo = new SynchronizedDemo_issync();
         demo.run();
     }
 
