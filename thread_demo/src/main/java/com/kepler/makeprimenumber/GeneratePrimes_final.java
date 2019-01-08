@@ -5,7 +5,7 @@ public class GeneratePrimes_final {
     private static int[] result;
 
     public static void main(String[] args){
-        int[] ints = generatePrimes(1000);
+        int[] ints = generatePrimes(100);
         for(int i = 0; i < ints.length; i ++){
             System.out.println(ints[i]);
         }

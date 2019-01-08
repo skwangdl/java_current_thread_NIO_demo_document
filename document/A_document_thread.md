@@ -763,7 +763,7 @@ InheritableThreadLocal对象中的set()方法其实调用的是ThreadLocal类中
 
 继承InheritableThreadLocal后，可以通过重写ChildValue()方法与initialValue()方法来初始化线程放入inheritableThreadLocals属性的值
 
-#第四章 Lock的使用
+##第四章 Lock的使用
 
 ##（一）ReentrantLock
 功能与ynchronized关键字一样，为了实现同步效果，但是RenntrantLock功能更加强大，具有嗅探锁定，多路分支通知等功能，内部原理为异步队列
@@ -957,7 +957,7 @@ unsafe.park(false, 3000000000L);
 ##（二）ReentrantReadWriteLock类
 读写互斥，写读互斥，写写互斥，读读异步
 
-#第五章 定时器Timer
+##第五章 定时器Timer
 JDK库中，Timer类主要负责计划任务的功能，也就是在指定的时间开始执行某一任务
 
 封装任务的类是TimerTask类
@@ -1018,7 +1018,7 @@ Timer cancel()
 ####8.Timer类 scheduleAtFixedRate(TimerTask task, Date firstTime, long period)
 任务执行的追赶性，如果计划执行时间已经晚于当前时间，那么之前需要执行的任务，被补充性的执行
 
-#第六章 单例模式与多线程
+##第六章 单例模式与多线程
 在多线程环境下，需要保证单例模式的安全性
 
 ##(一) 立即加载与延时加载
@@ -1089,7 +1089,7 @@ Timer cancel()
 
 >2.在单例类中，当在构建第二个对象时，就抛出异常
 
-#第七章 多线程补充
+##第七章 多线程补充
 
 ##(一)线程的状态
 线程对象在不同的运行时期存在不同的形态，状态信息存在于State枚举类中
