@@ -6,7 +6,7 @@ public class Demo_RandomThread extends Thread {
     public void run() {
         super.run();
         for(int i = 0; i < 1000; i ++){
-            System.out.print(Thread.currentThread().getName());
+            System.out.println(Thread.currentThread().getName());
         }
     }
 }
