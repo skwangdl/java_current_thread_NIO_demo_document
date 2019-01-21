@@ -10,6 +10,7 @@ public class Demo_StopThreadRun {
         Thread.sleep(1000);
         t.interrupt();
         System.out.println("is interrupted: " + t.isInterrupted());
+        t.interrupt();
         System.out.println("is interrupted: " + t.isInterrupted());
         System.out.println("stop thread ~~~~~");
     }
