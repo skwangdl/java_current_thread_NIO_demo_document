@@ -1,6 +1,6 @@
 package com.kepler.thread;
 
-public class CallMainMethodMainThread{
+public class Demo_CallMainMethodMainThread {
     private String message;
 
     public static void main(String[] args){
