@@ -7,7 +7,7 @@ public class Demo_OneThreadDeadRun {
     @Test
     public void run(){
         Demo_OneThreadDead td = new Demo_OneThreadDead();
-        td.printStringMethod();
+        new Thread(td).start();
         System.out.println("want to stop it : " + Thread.currentThread().getName());
         td.setContinuePrint(true);
     }

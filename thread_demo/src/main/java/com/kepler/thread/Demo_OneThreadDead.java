@@ -1,6 +1,6 @@
 package com.kepler.thread;
 
-public class Demo_OneThreadDead {
+public class Demo_OneThreadDead extends Thread {
     private boolean isContinuePrint = true;
 
     public boolean isContinuePrint(){
@@ -22,4 +22,9 @@ public class Demo_OneThreadDead {
         }
     }
 
+    @Override
+    public void run() {
+        super.run();
+        printStringMethod();
+    }
 }
