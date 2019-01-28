@@ -1,7 +1,5 @@
 package com.kepler.thread;
 
-import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
-
 public class Demo_NoShareData extends Thread {
 
     private int count = 5;
