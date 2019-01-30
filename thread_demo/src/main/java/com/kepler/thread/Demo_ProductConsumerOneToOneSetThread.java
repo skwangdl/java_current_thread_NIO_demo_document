@@ -11,6 +11,8 @@ public class Demo_ProductConsumerOneToOneSetThread extends Thread {
     @Override
     public void run() {
         super.run();
-        setThread.setValue();
+        while (true){
+            setThread.setValue();
+        }
     }
 }

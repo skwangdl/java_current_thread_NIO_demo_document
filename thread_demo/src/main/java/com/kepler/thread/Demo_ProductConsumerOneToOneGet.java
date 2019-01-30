@@ -10,14 +10,12 @@ public class Demo_ProductConsumerOneToOneGet {
 
     public void getValue(){
         try {
-            while (true){
-                synchronized (lock){
-                    if(Demo_ProductConsumerValueObject.value.equals("")){
-                        lock.wait();
-                    }
-                    System.out.println("get value: " + Demo_ProductConsumerValueObject.value);
-                    lock.notifyAll();
+            synchronized (lock){
+                if(Demo_ProductConsumerValueObject.value.equals("")){
+                    lock.wait();
                 }
+                System.out.println("get value: " + Demo_ProductConsumerValueObject.value);
+                lock.notifyAll();
             }
         } catch (InterruptedException e) {
             e.printStackTrace();
