@@ -11,8 +11,6 @@ public class Demo_ProductConsumerOneToOneGetThread extends Thread {
     @Override
     public void run() {
         super.run();
-        while(true){
-            getThread.getValue();
-        }
+        getThread.getValue();
     }
 }

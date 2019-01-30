@@ -11,13 +11,15 @@ public class Demo_ProductConsumerOneToOneSet {
     public void setValue(){
         try {
             synchronized (lock){
-                if(!Demo_ProductConsumerValueObject.value.equals("")){
-                    lock.wait();
+                while(true){
+                    if(!Demo_ProductConsumerValueObject.value.equals("")){
+                        lock.wait();
+                    }
+                    String value = System.currentTimeMillis() + " " + System.nanoTime();
+                    System.out.println("set value: " + value);
+                    Demo_ProductConsumerValueObject.value = value;
+                    lock.notifyAll();
                 }
-                String value = System.currentTimeMillis() + " " + System.nanoTime();
-                System.out.println("set value: " + value);
-                Demo_ProductConsumerValueObject.value = value;
-                lock.notifyAll();
             }
         } catch (InterruptedException e) {
             e.printStackTrace();
