@@ -4,8 +4,7 @@ import org.junit.Test;
 
 public class Demo_ProductConsumerOneToOneRun {
 
-    @Test
-    public void run(){
+    public static void main(String[] args){
         Object lock = new Object();
         Demo_ProductConsumerOneToOneSet set = new Demo_ProductConsumerOneToOneSet(lock);
         Demo_ProductConsumerOneToOneGet get = new Demo_ProductConsumerOneToOneGet(lock);
