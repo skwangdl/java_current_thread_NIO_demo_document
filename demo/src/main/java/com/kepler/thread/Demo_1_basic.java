@@ -14,7 +14,6 @@ public class Demo_1_basic {
     }
 
     class MyThread1 implements Runnable{
-
         @Override
         public void run() {
             System.out.println(Thread.currentThread().getName());
