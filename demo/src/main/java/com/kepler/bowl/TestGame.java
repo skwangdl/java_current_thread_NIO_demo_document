@@ -1,7 +1,6 @@
 package com.kepler.bowl;
 
 import junit.framework.*;
-import org.junit.Test;
 
 public class TestGame extends TestCase {
     public TestGame(String name){
