@@ -3,7 +3,7 @@ package com.kepler.thread;
 
 import org.junit.Test;
 
-public class Demo_1_Basic {
+public class Demo_1_basic {
 
     class MyThread extends Thread{
 
