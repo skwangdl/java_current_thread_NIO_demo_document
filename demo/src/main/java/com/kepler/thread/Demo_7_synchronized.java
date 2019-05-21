@@ -1,6 +1,12 @@
 package com.kepler.thread;
 
-public class Demo_7_synchronized extends Thread {
+public class Demo_7_synchronized {
+
+    //method_1, method_3 锁为当前对象this;
+    //method_2 锁为lock对象
+    //method_4 锁为类Demo_7_synchronized的class对象，该对象为单例
+    //method_5 锁为类Demo_7_synchronized的class对象，该对象为单例
+
     private Object lock = new Object();
 
     synchronized public void method_1() throws InterruptedException {
