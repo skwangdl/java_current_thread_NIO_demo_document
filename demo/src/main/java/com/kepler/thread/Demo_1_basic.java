@@ -6,10 +6,9 @@ import org.junit.Test;
 public class Demo_1_basic {
 
     class MyThread extends Thread{
-
         @Override
         public void run() {
-            System.out.println(Thread.currentThread().getName());
+            System.out.println(Thread.currentThread().getName() + " id: " + this.getId());
         }
     }
 
@@ -17,6 +16,14 @@ public class Demo_1_basic {
         @Override
         public void run() {
             System.out.println(Thread.currentThread().getName());
+            System.out.println("isAlive: " + Thread.currentThread().isAlive());
+            try {
+                System.out.println("sleep 2 second begin");
+                Thread.sleep(2000);
+                System.out.println("sleep 2 second end");
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 
