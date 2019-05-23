@@ -5,7 +5,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class MyService {
-//    公平锁：先锁定的线程，先得到锁运行，同步队列实现
+//    公平锁：先锁定的线程，先得到锁运行，同步队列实现,默认
 //    非公平锁：先锁定的线程，不一定先得到锁，CAS机制抢锁，谁抢到谁执行
     private Lock lock = new ReentrantLock();
     public Condition condition_A = lock.newCondition();
