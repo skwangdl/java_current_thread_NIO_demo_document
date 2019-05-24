@@ -3,7 +3,7 @@ package com.kepler.current.threadpool_executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class newCachedThreadPoolDemo {
+public class NewCachedThreadPoolDemo {
     public static void main(String[] args){
         ExecutorService executorService = Executors.newCachedThreadPool();
         executorService.execute(new Runnable() {
