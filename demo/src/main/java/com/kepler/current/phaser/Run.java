@@ -1,7 +1,5 @@
 package com.kepler.current.phaser;
 
-import com.kepler.thread.lock.MyThread;
-
 import java.util.concurrent.Phaser;
 
 public class Run {
