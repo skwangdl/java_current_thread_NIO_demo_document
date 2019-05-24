@@ -13,11 +13,18 @@ public class MyThread extends Thread {
     @Override
     public void run() {
         try {
-            System.out.println("begin " + Thread.currentThread().getName() +
+            System.out.println("begin first " + Thread.currentThread().getName() +
                     " come.. " + System.currentTimeMillis());
             System.out.println(Thread.currentThread().getName() +
                     " cbRef.await()=" + cbRef.await());
-            System.out.println("end " + Thread.currentThread().getName() +
+            System.out.println("end first " + Thread.currentThread().getName() +
+                    " gone.." + System.currentTimeMillis());
+
+            System.out.println("begin second " + Thread.currentThread().getName() +
+                    " come.. " + System.currentTimeMillis());
+            System.out.println(Thread.currentThread().getName() +
+                    " cbRef.await()=" + cbRef.await());
+            System.out.println("end second " + Thread.currentThread().getName() +
                     " gone.." + System.currentTimeMillis());
         } catch (InterruptedException e) {
             e.printStackTrace();
