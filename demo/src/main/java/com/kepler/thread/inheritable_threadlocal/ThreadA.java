@@ -1,4 +1,4 @@
-package com.kepler.thread.inheritablethreadlocal;
+package com.kepler.thread.inheritable_threadlocal;
 
 public class ThreadA extends Thread {
 
