@@ -13,7 +13,7 @@ public class Run {
         list.add(new MyCallableA());
         list.add(new MyCallableB1());
         ExecutorService executor = Executors.newCachedThreadPool();
-        // invokeAny 只取得最先完成任务的结果值
+        // invokeAny 只取得最先完成任务的结果值，第一个任务结束后其他的任务会被打断
         String getValueA = (String) executor.invokeAny(list);
         System.out.println("main get return value: " + getValueA);
         System.out.println("main end !!!");
