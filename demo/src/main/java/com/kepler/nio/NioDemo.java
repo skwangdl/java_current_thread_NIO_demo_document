@@ -6,6 +6,7 @@ import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 
 public class NioDemo {
+//    Buffer 都是非线程安全
 //    Buffer缓冲区4个核心技术点，容量capacity, 限制limit, 位置position, 标记mark，这4个技术点之间的值的大小关系：
 //          0 <= 标记mark <= 位置position <= 限制limit <= 容量capacity
 //    (1)缓冲区的capacity， limit, position, mark都不能为负数
