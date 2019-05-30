@@ -1,3 +1,30 @@
-1. SpringBoot
+1. SpringBoot 化繁为简
+    （1）与SpringMVC需要定义各种bean 实现，缓存，数据源，序列化，消息队列
+        SpringBoot只需要注解定义，没有大量的繁琐配置
+    （2）SpringBoot独立运行， 只需要运行 java -jar xxx.jar就可以启动服务
+    （3）SpringBoot内嵌Sevlet容器（Tomcat）,将包打到一起，只需要运行就可以启动服务
+    （4）SpringBoot简化固定配置
+    （5）SpringBoot提供准生产的应用监控
 
-2. SpringCloud
+    SpringBoot与microservice的关系：SpringBoot是java开发microservice的润滑剂
+
+2. SpringCloud 简化Java的分布式系统，配置统一，负载均衡，服务间调用，事务管理
+        为开发者快速构建具有分布式能力的服务（配置统一，服务注册，服务发现，断路器，服务间调用，
+        负载均衡，全局锁，分布式Session）SpringCloud是一系列框架的集合，简化了Java分布式系统的开发
+
+    SpringCloud与microservice: 侧重Java功能与开发microservice简单, 但是没有提供自动化部署与资源管理，
+        产出为镜像
+
+3. SpringCloud VS SpringBoot
+    SpringBoot 意在简化，是一种开发，配置风格
+    SpringCloud 意在简化分布式，是功能的集合，风格的统一
+
+4. SpringCloud核心组件：
+    Eureka 服务发现组件
+    Ribbon 客户端负载均衡组件
+    Hystrix 断路器
+    Zuul 服务网关
+    Spring Cloud Config 分布式配置
+
+5. 总结：
+    Microservice通讯； RPC框架（dubbo/dubbox grpc）； 服务发现，部署，更新，扩容；服务编排；
