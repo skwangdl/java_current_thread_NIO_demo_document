@@ -1,0 +1,52 @@
+Spring事务：确保数据的完整性与一致性
+
+1.事务的特性：
+    （1）原子性：事务是一个原子操作，由一系列动作组成。事务的原子性确保动作要么全部完成，要么完全不起作用。
+    （2）一致性：一旦事务完成（不管成功还是失败），系统必须确保它所建模的业务处于一致的状态，
+                而不会是部分完成部分失败。在现实中的数据不应该被破坏。
+    （3）隔离性：可能有许多事务会同时处理相同的数据，因此每个事务都应该与其他事务隔离开来，防止数据损坏。
+    （4）持久性：一旦事务完成，无论发生什么系统错误，它的结果都不应该受到影响，这样就能从任何系统崩溃中恢复过来。
+    通常情况下，事务的结果被写到持久化存储器中。
+
+2.Spring事务管理器
+    Spring并不直接管理事务，而是提供了多种事务管理器，他们将事务管理的职责委托给Hibernate或者JPA等持久化机制
+    所提供的相关平台框架的事务来实现
+
+    Spring事务管理器的接口是org.springframework.transaction.PlatformTransactionManager
+    TransactionDefinition：事务定义信息（事务隔离级别，传播行为，超时，只读，回滚规则）
+    TransactionStatus：事务运行状态
+
+3.事务的隔离级别
+    使用@Transactional的Isolation属性可以指定事务的隔离级别，但事务的隔离级别是由底层的数据库实现的，并不是
+    Spring来实现
+
+    （1）ISOLATION_DEFAULT：这是默认的隔离级别，使用数据库默认的事务隔离级别，另外四个与JDBC的隔离级别相对应
+    （2）ISOLATION_READ_UNCOMMITTED：这是事务最低的隔离级别，允许充许别外一个事务可以看到这个事务未提交的数据。
+            这种隔离级别会产生脏读，不可重复读和幻像读。
+    （3）ISOLATION_READ_COMMITTED：保证一个事务修改的数据提交后才能被另外一个事务读取。
+            另外一个事务不能读取该事务未提交的数据。这种事务隔离级别可以避免脏读出现，
+            但是可能会出现不可重复读和幻像读。
+    （4）ISOLATION_REPEATABLE_READ：这种事务隔离级别可以防止脏读，不可重复读。但是可能出现幻像读。
+            它除了保证一个事务不能读取另一个事务未提交的数据外,还保证了不可重复读。
+    （5）ISOLATION_SERIALIZABLE：这是花费最高代价但是最可靠的事务隔离级别。
+            事务被处理为顺序执行。除了防止脏读，不可重复读外，还避免了幻像读。
+
+4.事务的异常控制
+    @Transactional(rollbackFor=Exception.class)设定事务发生异常时，进行事务回滚
+    @Transactional(noRollbackFor=RuntimeException.class)设定事务发生RuntimeException时，不进行回滚
+
+5.事务的传播机制
+    @Transactional(propagation = Propagation.REQUIRED)
+        如果当前没有事务，就新建一个事务，如果已经存在一个事务中，加入到这个事务中
+    @Transactional(propagation = Propagation.MANDATORY)
+        使用当前的事务，如果当前没有事务，就抛出异常
+    @Transactional(propagation = Propagation.SUPPORTS)
+        支持当前事务，如果当前没有事务，就以非事务方式执行。
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+        新建一个事务，如果当前存在事务，把当前事务挂起，两者互不干扰
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+        以非事务方式执行操作，如果当前存在事务，就把当前事务挂起
+    @Transactional(propagation = Propagation.NEVER)
+        以非事务方式执行，如果当前存在事务，则抛出异常
+    @Transactional(propagation = Propagation.NESTED)
+        如果当前存在事务，则在嵌套事务内执行。如果当前没有事务，则执行与Propagation.REQUIRED类似的操作
