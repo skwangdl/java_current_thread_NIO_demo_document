@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yj.dao.BizDao">
+	<update id="updateBookStock">
+		update book set stock = stock - 1 where id = #{id}
+	</update>
+	
+	<update id="updateAccountBalance">
+		update account set balance = balance - 1 where id = #{id}
+	</update>
+</mapper>
