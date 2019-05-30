@@ -5,7 +5,18 @@ plugins {
 group 'com.kepler.thread'
 version '1.0-SNAPSHOT'
 
-sourceCompatibility = 1.8
+buildscript {
+    ext {
+        springBootVersion = "2.0.5.RELEASE"
+    }
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
+}
 
 repositories {
     mavenCentral()
@@ -13,4 +24,6 @@ repositories {
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
+    testCompile('org.springframework.boot:spring-boot-starter-test')
+    compile('org.springframework.boot:spring-boot-starter')
 }
