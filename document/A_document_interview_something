@@ -38,10 +38,24 @@
 
 5. threadlocal 使用场景及问题
     （1）threadlocal原理
-    //TODO
+        类ThreadLocal主要的作用就是将数据放入当前线程对象中的ThreadLocalMap里，
+            这个ThreadLocalMap是Thread类的实例变量。
+        类ThreadLocal自己不管理，不存储任何数据，只是数据和ThreadLocalMap之间的中介，
+            通过ThreadLocal将数据放入ThreadLocalMap中，执行流程:
+                data -> ThreadLocal -> currentThread() -> ThreadLocalMap
 
+        执行后每个线程中的ThreadLocalMap就存有自己的数据，ThreadLocalMap的key存储的是ThreadLocal对象，
+        value就是存储的值。每个Thread中Map的值只对当前线程可见，其他线程不可以访问当前线程对象中Map的值。
 
+                ThreadLocalMap(ThreadLocal<?> firstKey, Object firstValue) {
+                    table = new Entry[INITIAL_CAPACITY];        //firstKey  为当前TheadLocal实例
+                    int i = firstKey.threadLocalHashCode & (INITIAL_CAPACITY - 1);
+                    table[i] = new Entry(firstKey, firstValue); //table为    //ThreadLocal类内的Entry数组
+                    size = 1;
+                    setThreshold(INITIAL_CAPACITY);
+                }
 
+        变量threadLocals默认是包级访问，不能直接从外部访问该变量，而ThreadLocal与Thread与该变量在同一个包中
 
     （2）threadlocal 并不能解决多线程共享变量的问题，
         同一个 threadlocal 所包含的对象，在不同的 thread 中有不同的副本，互不干扰，
