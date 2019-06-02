@@ -105,7 +105,7 @@ HashCode容量有限，多次插入元素后，Key映射位置发生冲突的几
 	0			1			2			3			4			5			6			7	
 	null		Entry4		null		Entry2		Entry1		null		Entry5		null	
 										Entry3
-	e:Entry2	e.next:Entry2
+	e:Entry3	e.next:Entry2
 
 	线程B:
 	
