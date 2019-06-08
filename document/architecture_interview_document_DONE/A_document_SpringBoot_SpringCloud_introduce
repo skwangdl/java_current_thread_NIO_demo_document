@@ -26,5 +26,8 @@
     Zuul 服务网关
     Spring Cloud Config 分布式配置
 
-5. 总结：
+5. SpringBoot 常用注解：
+    //TODO
+
+6. 总结：
     Microservice通讯； RPC框架（dubbo/dubbox grpc）； 服务发现，部署，更新，扩容；服务编排；
