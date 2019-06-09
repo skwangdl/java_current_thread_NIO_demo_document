@@ -1,0 +1,92 @@
+1.docker更换镜像库
+    （1）修改配置文件
+        vi /etc/docker/daemon.json
+
+        {
+            "registry-mirrors": ["http://hub-mirror.c.163.com"]
+        }
+
+    （2）重新启动docker服务
+        systemctl restart docker
+
+
+2.docker常用命令
+    docker pull openjdk:7-jre 拉去镜像,选择版本
+    docker push 上传镜像
+    docker images|grep jdk 查找包含jdk名称的本地镜像
+    docker run -it --entrypoint bash openjdk:7-jre 运行openjdk镜像 -i：以交互模式运行容器,-t: 为容器重新分配一个伪输入终端
+    docker build -t user-service:latest .  使用当前目录的Dockerfile编译镜像，-t配置镜像名称 user-service:latest，如果存在同名则覆盖
+    docker run -it user-service:latest --mysql.address=192.168.1.7  外部传入参数mysql.address，不能写入127.0.0.1,因为需要连接到主机
+        ${mysql.address}取值
+
+3.docker容器间通讯的三种方式
+    （1）直接通讯，通过容器的IP与端口，很少使用，因为容器的IP与端口不稳定，易变化
+    （2）服务映射主机端口，直接访问主机的IP与端口
+    （3）docker的link机制，docker-compose.yml, 使用compose命令会寻找这个配置文件
+
+4.docker-compose 使用
+    docker-compose up -d
+        docker后台运行docker-compose.yml，构建并运行容器
+    docker-compose up -d user-service
+        docker 单独启动一个服务 user-service
+
+
+    version: '3'        //定义版本
+    networks:           //网络配置
+      default:
+        external:
+          name: imooc-network
+
+    services:           //定义services
+      message-service:  //service名字
+        image: message-service:latest   //该服务使用的镜像
+
+      user-service:
+        image: user-service:latest
+        command:        //该镜像运行时传入的参数
+        - "--mysql.address=172.19.0.2"
+
+      user-edge-service:
+        image: user-edge-service:latest
+        links:      //定义该镜像运行service依赖的其他service
+        - user-service
+        - message-service
+        command:
+        - "--redis.address=172.19.0.3"
+
+      course-service:
+        image: course-service:latest
+        links:
+        - user-service
+        command:
+        - "--mysql.address=172.19.0.2"
+        - "--zookeeper.address=172.19.0.4"
+
+      course-edge-service:
+        image: course-edge-service:latest
+        links:
+        - user-edge-service
+        command:
+        - "--zookeeper.address=172.19.0.4"
+
+      api-gateway-zuul:
+        image: api-gateway-zuul:latest
+        links:
+        - course-edge-service
+        - user-edge-service
+        ports:      //配置映射的主机端口
+        - 8080:8080
+
+5.Dockerfile 使用及常用命令
+
+    FROM hub.mooc.com:8080/micro-service/openjdk:7-jre   //确定基础运行环境
+    MAINTAINER xxx xxx@imooc.com                        //维护信息
+
+    COPY target/user-thrift-service-1.0-SNAPSHOT.jar /user-service.jar  // 将要运行的文件复制入docker运行环境中
+
+    ENTRYPOINT ["java", "-jar", "/user-service.jar"]  //输入运行docker容器时的运行命令
+
+    可以在Dockerfile内ENV指令用来在镜像构建过程中设置环境变量
+
+6.docker构建私有仓库 harbor
+    //TODO
