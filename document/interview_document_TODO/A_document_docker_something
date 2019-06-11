@@ -30,7 +30,6 @@
     docker-compose up -d user-service
         docker 单独启动一个服务 user-service
 
-
     version: '3'        //定义版本
     networks:           //网络配置
       default:

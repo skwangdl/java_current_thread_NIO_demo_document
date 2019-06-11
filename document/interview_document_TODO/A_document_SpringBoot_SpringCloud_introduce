@@ -88,9 +88,6 @@
 
     （13）@Profiles
         Spring Profiles提供了一种隔离应用程序配置的方式，并让这些配置只能在特定的环境下生效。
-
-    （14）@Profiles
-        Spring Profiles提供了一种隔离应用程序配置的方式，并让这些配置只能在特定的环境下生效。
         任何@Component或@Configuration都能被@Profile标记，从而限制加载它的时机。
 
 6. SpringBoot SpringCloud总结：
