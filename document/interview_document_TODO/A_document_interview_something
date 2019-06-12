@@ -1,11 +1,11 @@
-1. synchronized 和 reentrantlock 异同
+1. Synchronized 和 Reentrantlock 异同
     相同点: 都实现了多线程同步和内存可见性语义,都是可重入锁
     不同点:
         实现机制不同
-            synchronized
+            Synchronized
                 （1）通过 java 对象头锁标记和 Monitor 对象实现
                 （2）依赖 jvm 内存模型保证包含共享变量的多线程内存可见性
-            reentrantlock
+            Reentrantlock
                 （1）通过 CAS、ASQ（AbstractQueuedSynchronizer）和 locksupport（用于阻塞和解除阻塞）实现
                 （2）通过 ASQ 的 volatile state 保证包含共享变量的多线程内存可见性
 
@@ -16,7 +16,7 @@
             reentrantlock 提供有限时间等候锁（设置过期时间）、可中断锁（lockInterruptibly）、condition（提供 await、signal 等方法）等丰富语义
             reentrantlock 提供公平锁和非公平锁实现 synchronized 不可设置等待时间、不可被中断（interrupted）
 
-2. concurrenthashmap 为何读不用加锁
+2. ConcurrentHashmap 为何读不用加锁
     jdk1.7
         （1）HashEntry 中的 key、hash、next 均为 final 型，只能表头插入、删除结点
         （2）HashEntry 类的 value 域被声明为 volatile 型
@@ -36,7 +36,7 @@
     （1）使用退出标志，这个 flag 变量要多线程可见
     （2）使用 interrupt，结合 isInterrupted() 使用
 
-5. threadlocal 使用场景及问题
+5. ThreadLocal 使用场景及问题
     （1）threadlocal原理
         类ThreadLocal主要的作用就是将数据放入当前线程对象中的ThreadLocalMap里，
             这个ThreadLocalMap是Thread类的实例变量。
@@ -131,7 +131,7 @@
         则返回一个的登录页面，用户输入账号密码进行登录。如果用户已经登录了，则生成加密的Token，
         并且重定向到子应用提供的验证Token的接口，通过解密和校验之后，子应用登录当前用户
 
-14.maven()更换远程地址及本地仓库地址
+14.Maven 更换远程地址及本地仓库地址
     （1）修改本地仓库位置
         打开maven安装目录下面conf文件夹内的settings.xml,在localRepository注释下面加一行
         <localRepository>F:\maven\repository</localRepository>设置本地仓库位置
@@ -146,12 +146,24 @@
         更换远程库为阿里云镜像库
 
 15.maven 包依赖问题 A-> B -> C1.0  A -> C2.0
-
+    //TODO
 
 16.不使用递归，遍历二叉树
     //TODO
     使用栈实现
 
-17.未知单向链表，查询倒数第N个元素
+17.Sql 开窗函数
+    //TODO
+
+18.DB索引失效情况，模糊查询如何使用索引
+    //TODO
+
+19.sql优化
+    //TODO
+
+20.Redis基本使用
+    //TODO
+
+21.未知单向链表，查询倒数第N个元素
     设置两个指针，指针间距为N，然后初始状态，A指针指向链表头，B指针指向第N个元素，然后两个指针一起移动，当B指针指向最后一个
     元素时，A指针指向倒数第N个元素

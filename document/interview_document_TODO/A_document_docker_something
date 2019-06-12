@@ -88,4 +88,12 @@
     可以在Dockerfile内ENV指令用来在镜像构建过程中设置环境变量
 
 6.docker构建私有仓库 harbor
-    //TODO
+    （1）共有仓库 hub.docker.com
+        docker tag "image name" "version" 确定镜像版本
+        docker login命令登录默认
+
+    （2）harbor
+        1. harbor.cfg配置，修改hostname = hub.kepler.com:8080（mac安全问题80不对外开放）,配置username password
+        2. ./install.sh 运行安装，修改docker-compose.yml,修改挂载，修改权限，chmod 755
+        3. harbor复制规则，中心harbor自动同步子harbor的镜像库
+        4. docker push hub.kepler.com:8080/micro-service/openjdk:7-jre
