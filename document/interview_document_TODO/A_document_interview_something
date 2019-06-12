@@ -146,11 +146,44 @@
         更换远程库为阿里云镜像库
 
 15.maven 包依赖问题 A-> B -> C1.0  A -> C2.0
+    （1）GroupId与ArtifactId
+        GroupId可以简单理解为项目开发团队的统一标识，一般分为多段，第一段代表域，org,com等，第二段代表公司团队名称
+        ArtifactId为实际的项目名称
+
+    （2）冲突解决
+        Maven对同一个groupId,artifactId的冲突仲裁，是依赖路径越短越优先进行保留
+        使用mvn dependency:tree 导出全部的依赖
+        同一个jar包但groupId, artifactId不同，可以通过pom.xml dependency内设定<exclusion>排除冲突的包
+        路径较长的话直接在pom,xml内写入，路径短优先级高
+        可以通过mvn install确认打出来的war是否有被排除的依赖
+
+16.不使用递归和栈，遍历二叉树
     //TODO
 
-16.不使用递归，遍历二叉树
-    //TODO
-    使用栈实现
+void inorderMorrisTraversal(TreeNode *root) {
+     TreeNode *cur = root, *prev = NULL;
+     while(cur != NULL) {
+         if(cur->left == NULL) {    // 1. cur 的左孩子为 NULL
+             printf("%d ", cur->val);
+             cur = cur->right;
+         }
+         else {
+             // 寻找前驱节点
+             prev = cur->left;
+             while(prev->right != NULL && prev->right != cur) prev = prev->right;
+
+             if(prev->right == NULL) {    // 2.1. 前驱节点的右孩子为 NULL
+                 prev->right = cur;
+                 cur = cur->left;
+             }
+             else {                       // 2.2. 前驱节点的右孩子不为 NULL（为当前节点 cur）
+                 prev->right = NULL;
+                 printf("%d ", cur->val);
+                 cur = cur->right;
+             }
+         }
+     }
+ }
 
 17.Sql 开窗函数
     //TODO
@@ -162,6 +195,14 @@
     //TODO
 
 20.Redis基本使用
+    1.Redis的value支持字符串，链表，集合，有序集合，常量，hash
+    2.redis-cli -h <ip> -p <port> 客户端连接Redis Server
+    3.ping 检查是否连接成功
+    4.set <key> <value>/ get <key>
+    5.del <key>
+    6.keys *查看所有的key值
+
+21.Mysql实现乐观锁
     //TODO
 
 21.未知单向链表，查询倒数第N个元素
