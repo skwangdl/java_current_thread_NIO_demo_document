@@ -224,7 +224,67 @@ void inorderMorrisTraversal(TreeNode *root) {
  }
 
 17.Sql 开窗函数
-    //TODO
+    （1）举例
+        未使用开窗函数：
+        select fname,
+               fcity,
+               fsalary,
+               (select count(*) from t_person where fsalary < 5000) 工资少于5000员工总数
+          from t_person
+         where fsalary < 5000
+
+        使用开窗函数：
+        select fname, fcity, fsalary, count(*) over() 工资小于5000员工数
+          from t_person
+         where fsalary < 5000
+
+    （2）开窗函数格式
+        函数名（列） over（PARTITION BY 列名） 结果集字段名
+        如果 OVER 关键字后的括号中的选项为空，则开窗函数会对结果集中的所有行进行聚合运算。
+
+    （3）PARTITION BY
+        开窗函数的 OVER 关键字后括号中的可以使用 PARTITION BY 子句来定义行的分区来供进行聚合计算
+
+    （4）ORDER BY
+        开窗函数中可以在OVER关键字后的选项中使用ORDER BY子句来指定排序规则，而且有的开窗函数还要求必须指定排序规则。
+        使用ORDER BY子句可以对结果集按照指定的排序规则进行排序，并且在一个指定的范围内进行聚合运算
+
+            ORDER BY 字段名 RANGE|ROWS BETWEEN 边界规则1 AND 边界规则2
+
+    （5）高级开窗函数/ 排名的实现ROW_NUMBER();RANK() ,DENSE_RANK()
+
+        还可以在开窗函数中使用一些高级的函数，有些函数同时被DB2和Oracle同时支持，比如
+        RANK()、DENSE_RANK()、ROW_NUMBER()，而有些函数只被Oracle支持，比如
+        RATIO_TO_REPORT()、NTILE()、LEAD()、LAG()、FIRST_VALUE()、LAST_VALUE()。
+
+        SELECT FName, FSalary,FAge,
+        RANK() OVER(ORDER BY fsalary desc) f_RANK,
+        DENSE_RANK() OVER(ORDER BY fsalary desc) f_DENSE_RANK,
+        ROW_NUMBER() OVER(ORDER BY fsalary desc) f_ROW_NUMBER
+        FROM T_Person;
+
+
+        RANK(),DENSE_RANK()语法：
+            RANK()
+            DENSE_RANK()
+            【语法】RANK ( ) OVER ( [query_partition_clause] order_by_clause )
+                dense_RANK ( ) OVER ( [query_partition_clause] order_by_clause )
+
+            【功能】聚合函数RANK 和 dense_rank 主要的功能是计算一组数值中的排序值。
+            【参数】dense_rank与rank()用法相当，
+            【区别】dence_rank在并列关系是，相关等级不会跳过。rank则跳过
+            rank()是跳跃排序，有两个第二名时接下来就是第四名（同样是在各个分组内）
+            dense_rank()l是连续排序，有两个第二名时仍然跟着第三名。
+
+        ROW_NUMBER()语法：
+            【语法】ROW_NUMBER() OVER (PARTITION BY COL1 ORDER BY COL2)
+            【功能】表示根据COL1分组，在分组内部根据 COL2排序，而这个值就表示每组内部排序后的顺序编号（组内连续的唯一的）
+            row_number() 返回的主要是“行”的信息，并没有排名
+            【参数】
+            【说明】Oracle分析函数
+
+            主要功能：用于取前几名，或者最后几名等
+
 
 18.DB索引失效情况，模糊查询如何使用索引
     1. select * from USER where name=‘xzz’ or age=16；
