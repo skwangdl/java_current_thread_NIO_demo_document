@@ -106,13 +106,53 @@
     （1）调用 iterator 相关方法删除
     （2）倒删，防止正序删除导致的数组重排，index 跳过数组元素问题
 
-12. 有哪些 GC ROOTS（跟日常开发比较相关的是和此相关的内存泄露）
-    （1）所有 Java 线程当前活跃的栈帧里指向 GC 堆里的对象的引用，因此用不到的对象及时置 null，提升内存回收效率
-    （2）静态变量引用的对象，因此减少静态变量特别是静态集合变量的大小，集合存放的对象覆写 equals()和 hashcode()，防止持续增长
-    （3）本地方法 JNI 引用的对象
-    （4）方法区中的常量引用的对象，因此减少在长字符串上调用 String.intern()
-    （5）classloader 加载的 class 对象，因此自定义 classloader 无效时及时置 null 并且注意类加载器加载对象之间的隔离
-    （6）jvm 里的一些静态数据结构里指向 GC 堆里的对象的引用
+12. GC相关 Garbage Collection
+    GC主要就是在Java堆中进行的
+    Java堆：Java虚拟机管理的内存中最大的一块，所有线程共享，几乎所有的对象实例和数组都在这类分配内存。
+    堆内存又分为：新生代和老年代，并且一般新时代的空间比老年代大。
+
+    （1）GC的主要任务
+        1.分配内存
+        2.确保被引用对象的内存不被错误的回收
+        3.回收不再被引用的对象的内存空间
+
+    （2）GC主要解决的问题
+        一， 哪些内存需要回收？
+        1. 引用计数算法：
+            每当一个地方引用它时，计数器+1；引用失效时，计数器-1；计数值=0——不可能再被引用。
+            但是会发现并没有因为两个对象互相引用就没有回收，因此引用计数算法很难解决对象之间相互矛盾循环引用的问题
+        2.可达性分析算法：
+            向图，树图，把一系列“GC Roots”作为起始点，从节点向下搜索，路径称为引用链，
+            当一个对象到GC Roots没有任何引用链相连，即不可达时，则证明此对象时不可用的。
+
+        二， 什么时候回收？
+            即使是被判断不可达的对象，也要再进行筛选，当对象没有覆盖finalize()方法，
+            或者finalize方法已经被虚拟机调用过，则没有必要执行；
+
+            对象可以在被GC时可以自我拯救(this)，机会只有一次，因为任何一个对象的finalize（）
+            方法都只会被系统自动调用一次。并不建议使用，应该避免。使用try_finaly或者其他方式。
+
+        三， 如何回收？
+            垃圾收集算法：
+            1.标记—清除算法
+                两个阶段：标记，清除；
+                不足：效率问题；空间问题(会产生大量不连续的内存碎片)
+            2.复制算法
+                将可用内存按容量分为大小相等的两块，每次都只使用其中一块；
+                不足：将内存缩小为了原来的一半
+                新生代
+            3.标记—整理算法
+                标记，清除（让存活的对象都向一端移动）
+                老年代
+
+            4. 垃圾回收器
+                新生代： Serial（串行，单线程） ParNew（并行，Serial的多线程版本） ParallelScavenge（复制算法）
+                老年代： CMS（标记-清除） SerialOld（MSC） ParallelOld
+                    CMS，全称Concurrent Low Pause Collector
+
+        新建的对象再新生代中，如果新生代内存不够，就进行Minor GC释放掉不活跃对象；
+        如果还是不够，就把部分活跃对象复制到老年代中，如果还是不够，就进行MajorGC释放老年代，
+        如果还是不够，JVM会抛出内存不足，发生oom，内存泄漏。
 
 13. 单点登录
     在一个多系统共存的环境下，用户在一处登录后，就不用在其他系统中登录，也就是用户的一次登录能得到其他所有系统的信任
@@ -158,8 +198,6 @@
         可以通过mvn install确认打出来的war是否有被排除的依赖
 
 16.不使用递归和栈，遍历二叉树
-    //TODO
-
 void inorderMorrisTraversal(TreeNode *root) {
      TreeNode *cur = root, *prev = NULL;
      while(cur != NULL) {
@@ -189,10 +227,60 @@ void inorderMorrisTraversal(TreeNode *root) {
     //TODO
 
 18.DB索引失效情况，模糊查询如何使用索引
-    //TODO
+    1. select * from USER where name=‘xzz’ or age=16；
+    例如这种情况：当语句中带有or的时候 即使有索引也会失效。
+
+    2.select *  from  USER where name like‘%xzz’ ；
+    例如这种情况：当语句索引 like 带%的时候索引失效（注意：如果上句为 like‘xzz’此时索引是生效的） 
+
+    3.select * from USER where name=123;（此处只是简单做个例子，实际场景中一般name不会为数字的）
+    例如这种情况：如果列类型是字符串，那一定要在条件中将数据使用引号引用起来,否则不使用索引
+
+    5.假如上述将name和age设置为联合索引，一定要注意顺序，mysql联合所以有最左原则，下面以name，age的顺序讲下
+    （1）select * from USER where name=‘xzz’ and age =11；
+    （2）select * from USER where age=11 and name=‘xzz’；
+    例如上诉两种情况：以name，age顺序为联合索引，（1）索引是生效的，（2）索引是失效的
+
+    6.比如age为索引：select * from USER where age-1>11;
+    例如这种情况：索引失效，不要在索引上进行操作，否则索引会失效（是有类似时间转换的问题和上诉问题一样）
 
 19.sql优化
-    //TODO
+    1. 对查询进行优化，要尽量避免全表扫描，首先应考虑在 where 及 order by 涉及的列上建立索引
+    2. 应尽量避免在 where 子句中对字段进行 null 值判断，否则将导致引擎放弃使用索引而进行全表扫描
+        最好不要给数据库留NULL，尽可能的使用 NOT NULL填充数据库.
+    3. 应尽量避免在 where 子句中使用 != 或 <> 操作符，否则将引擎放弃使用索引而进行全表扫描
+    4. 应尽量避免在 where 子句中使用 or 来连接条件，如果一个字段有索引，一个字段没有索引，
+        将导致引擎放弃使用索引而进行全表扫描
+            select id from t where num=10 or Name = 'admin'
+            可以这样做：
+            select id from t where num = 10
+            union all
+            select id from t where Name = 'admin'
+    5. in 和 not in 不走索引，对于连续的数值，能用between和exists代替的就不用in和not in
+            select num from a where num in(select num from b)
+            替换为：
+            select num from a where exists(select 1 from b where num=a.num)
+    6. 应尽量避免在 where 子句中对字段进行表达式操作，这将导致引擎放弃使用索引而进行全表扫描
+            select id from t where num/2 = 100
+            应替换为：
+            select id from t where num = 100*2
+    7. 应尽量避免在where子句中对字段进行函数操作，这将导致引擎放弃使用索引而进行全表扫描
+            select id from t where substring(name,1,3) = ’abc’       -–name以abc开头的id
+            select id from t where datediff(day,createdate,’2005-11-30′) = 0    -–‘2005-11-30’    --生成的id
+            应改为：
+            select id from t where name like 'abc%'
+            select id from t where createdate >= '2005-11-30' and createdate < '2005-12-1'
+    8. 对于多张大数据量（这里几百条就算大了）的表JOIN，要先分页再JOIN，否则逻辑读会很高，性能很差。
+
+    9. 尽量使用数字型字段，若只含数值信息的字段尽量不要设计为字符型
+
+    10. 尽可能的使用 varchar/nvarchar 代替 char/nchar ，因为首先变长字段存储空间小，可以节省存储空间
+
+    11. 在新建临时表时，如果一次性插入数据量很大，那么可以使用 select into 代替 create table，避免造成大量 log
+
+    12. 如果使用到了临时表，在存储过程的最后务必将所有的临时表显式删除，先 truncate table ，然后 drop table
+
+    13. 尽量避免使用游标，因为游标的效率较差，如果游标操作的数据超过1万行，那么就应该考虑改写
 
 20.Redis基本使用
     1.Redis的value支持字符串，链表，集合，有序集合，常量，hash
@@ -202,9 +290,58 @@ void inorderMorrisTraversal(TreeNode *root) {
     5.del <key>
     6.keys *查看所有的key值
 
-21.Mysql实现乐观锁
+21.Sql乐观锁 悲观锁
+    （1）悲观锁
+        要使用悲观锁，我们必须关闭mysql数据库的自动提交属性，因为MySQL默认使用autocommit模式，
+        也就是说，当你执行一个更新操作后，MySQL会立刻将结果进行提交。
+
+        //0.开始事务
+        begin;/begin work;/start transaction; (三者选一就可以)
+        //1.查询出商品信息
+        select status from t_goods where id=1 for update;
+        //2.根据商品信息生成订单
+        insert into t_orders (id,goods_id) values (null,1);
+        //3.修改商品status为2
+        update t_goods set status=2;
+        //4.提交事务
+        commit;/commit work;
+
+        使用了 select…for update 的方式，这样就通过开启排他锁的方式实现了悲观锁。
+        此时在t_goods表中，id为1的 那条数据就被我们锁定了，其它的事务必须等本次事务提交之后才能执行。
+
+        在效率方面，处理加锁的机制会让数据库产生额外的开销，还有增加产生死锁的机会；
+        另外，在只读型事务处理中由于不会产生冲突，也没必要使用锁，这样做只能增加系统负载
+
+    （2） 乐观锁
+        乐观锁假设认为数据一般情况下不会造成冲突，所以在数据进行提交更新的时候，
+        才会正式对数据的冲突与否进行检测，如果发现冲突了，则让返回用户错误的信息，让用户决定如何去做
+
+        数据版本,为数据增加的一个版本标识。当读取数据时，将版本标识的值一同读出，数据每更新一次，
+        同时对版本标识进行更新。当我们提交更新的时候，判断数据库表对应记录的当前版本信息与
+        第一次取出来的版本标识进行比对，如果数据库表当前版本号与第一次取出来的版本标识值相等，
+        则予以更新，否则认为是过期数据
+
+        实现数据版本有两种方式，第一种是使用版本号，第二种是使用时间戳
+        使用版本号时，可以在数据初始化时指定一个版本号，每次对数据的更新操作都对版本号执行+1操作。
+        并判断当前版本号是不是该数据的最新的版本号。
+
+        1.查询出商品信息
+        select (status,status,version) from t_goods where id=#{id}
+        2.根据商品信息生成订单
+        3.修改商品status为2
+        update t_goods
+        set status=2,version=version+1
+        where id=#{id} and version=#{version};
+
+        乐观并发控制相信事务之间的数据竞争(data race)的概率是比较小的，因此尽可能直接做下去，
+        直到提交的时候才去锁定，所以不会产生任何锁和死锁。但如果直接简单这么做，
+        还是有可能会遇到不可预期的结果，例如两个事务都读取了数据库的某一行，经过修改以后写回数据库，
+        这时就遇到了问题。
+
+
+22. volatile不能保证同步 与 i++ ++i i=i+1执行指令
     //TODO
 
-21.未知单向链表，查询倒数第N个元素
-    设置两个指针，指针间距为N，然后初始状态，A指针指向链表头，B指针指向第N个元素，然后两个指针一起移动，当B指针指向最后一个
-    元素时，A指针指向倒数第N个元素
+23.未知单向链表，查询倒数第N个元素
+    设置两个指针，指针间距为N，然后初始状态，A指针指向链表头，B指针指向第N个元素，
+    然后两个指针一起移动，当B指针指向最后一个元素时，A指针指向倒数第N个元素
